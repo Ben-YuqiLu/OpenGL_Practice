@@ -23,6 +23,7 @@ int main(void)
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
 
+	// glew need to be initialized under rendering tasks
 	if (glewInit() != GLEW_OK)
 	{
 		std::cout << "Error!" << std::endl;
@@ -30,18 +31,27 @@ int main(void)
 
 	std::cout << glGetString(GL_VERSION) << std::endl;
 
+	float positions[6] = {
+		-0.5f, -0.5f,
+		 0.0f,  0.5f,
+		 0.5f, -0.5f,
+	};
+
+	unsigned int buffer;
+
+	/* Init Vertex Buffer */
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(buffer, sizeof(float) * 6, positions, GL_STATIC_DRAW);
+
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
 		/* Render here */
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glBegin(GL_TRIANGLES);
-		glVertex2f(-0.5f, -0.5f);
-		glVertex2f( 0.0f,  0.5f);
-		glVertex2f( 0.5f, -0.5f);
-		glEnd();
-		
+		/* Draw Call */
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
